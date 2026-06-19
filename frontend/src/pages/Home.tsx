@@ -186,19 +186,11 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
-            marginBottom: '10px'
+            marginBottom: '20px'
           }}>
             <Sparkles size={16} />
             Motor de Inteligência Artificial Ativo
           </span>
-          <h1 className="display-title welcome-banner-title" style={{
-            fontSize: '2.5rem',
-            lineHeight: 1.1,
-            marginBottom: '15px',
-            color: 'var(--text-primary)'
-          }}>
-            A Próxima Geração da <span style={{ color: 'var(--accent-green)', textShadow: '0 0 10px var(--accent-green-glow)' }}>Leitura</span>
-          </h1>
           <p className="welcome-banner-desc" style={{
             color: 'var(--text-secondary)',
             fontSize: '1.05rem',
