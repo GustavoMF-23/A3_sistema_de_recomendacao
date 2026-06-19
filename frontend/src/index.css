@@ -1,0 +1,348 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap');
+
+:root {
+  /* Tema Claro (Default) */
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f1f5f9;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --accent-green: #059669;
+  --accent-green-hover: #047857;
+  --accent-green-glow: rgba(5, 150, 105, 0.2);
+  --border-color: #e2e8f0;
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(226, 232, 240, 0.8);
+  --card-shadow: 0 4px 20px -2px rgba(148, 163, 184, 0.12), 0 2px 8px -1px rgba(148, 163, 184, 0.08);
+  
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: 'Rajdhani', sans-serif;
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --border-radius-sm: 8px;
+  --border-radius-md: 12px;
+  --border-radius-lg: 20px;
+}
+
+[data-theme="dark"] {
+  /* Tema Escuro - Futurista/Cyberpunk */
+  --bg-primary: #060913;
+  --bg-secondary: #0c1122;
+  --bg-tertiary: #131b31;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --accent-green: #00ff9d;
+  --accent-green-hover: #34d399;
+  --accent-green-glow: rgba(0, 255, 157, 0.25);
+  --border-color: #1e293b;
+  --glass-bg: rgba(12, 17, 34, 0.75);
+  --glass-border: rgba(30, 41, 59, 0.6);
+  --card-shadow: 0 0 20px rgba(0, 255, 157, 0.03), 0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  transition: var(--transition-smooth);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-green);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+/* Efeitos Futuristas */
+.cyber-glow {
+  text-shadow: 0 0 10px var(--accent-green-glow);
+}
+
+.cyber-border {
+  border: 1px solid var(--border-color);
+  position: relative;
+  overflow: hidden;
+}
+
+.cyber-border::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transition: 0.5s;
+}
+
+[data-theme="dark"] .cyber-border::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 255, 157, 0.1),
+    transparent
+  );
+}
+
+.cyber-border:hover::after {
+  left: 150%;
+}
+
+.cyber-btn {
+  background: transparent;
+  border: 1px solid var(--accent-green);
+  color: var(--accent-green);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+  padding: 10px 24px;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-transform: uppercase;
+}
+
+.cyber-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--accent-green);
+  z-index: -1;
+  transform: translateX(-101%);
+  transition: var(--transition-smooth);
+}
+
+.cyber-btn:hover {
+  color: #060913 !important;
+  box-shadow: 0 0 15px var(--accent-green-glow);
+}
+
+.cyber-btn:hover::before {
+  transform: translateX(0);
+}
+
+.cyber-btn:disabled {
+  border-color: var(--border-color);
+  color: var(--text-secondary);
+  cursor: not-allowed;
+}
+
+.cyber-btn:disabled::before {
+  display: none;
+}
+
+.cyber-btn-filled {
+  background: var(--accent-green);
+  border: 1px solid var(--accent-green);
+  color: #060913 !important;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+  padding: 10px 24px;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-transform: uppercase;
+  box-shadow: 0 0 10px var(--accent-green-glow);
+}
+
+.cyber-btn-filled:hover {
+  background: var(--accent-green-hover);
+  border-color: var(--accent-green-hover);
+  box-shadow: 0 0 20px var(--accent-green-glow);
+  transform: translateY(-1px);
+}
+
+/* Glassmorphism */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--card-shadow);
+  border-radius: var(--border-radius-md);
+  transition: var(--transition-smooth);
+}
+
+/* Typography helper */
+.display-title {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+}
+
+/* Grid & Layout helpers */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.grid-books {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 24px;
+}
+
+@media (max-width: 640px) {
+  .grid-books {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
+  }
+}
+
+/* Responsividade da Barra de Navegação */
+@media (max-width: 768px) {
+  .nav-logo-text {
+    font-size: 1.2rem !important;
+  }
+  .nav-user-name {
+    display: none !important; /* Esconde o nome do usuário, deixa só o ícone */
+  }
+  .nav-user-pill {
+    padding: 6px !important;
+    border-radius: 50% !important; /* Vira um círculo perfeito */
+  }
+  .nav-actions-container {
+    gap: 10px !important;
+  }
+  
+  /* Banner Principal da Home */
+  .welcome-banner {
+    padding: 24px 16px !important;
+    border-radius: var(--border-radius-md) !important;
+  }
+  .welcome-banner-title {
+    font-size: 1.8rem !important;
+  }
+  .welcome-banner-desc {
+    font-size: 0.95rem !important;
+    margin-bottom: 15px !important;
+  }
+}
+
+@media (max-width: 540px) {
+  .nav-logo-text {
+    display: none !important; /* Esconde o texto da marca Cyber-Leitura no celular */
+  }
+  
+  /* Filtros de Gênero e Busca da Home */
+  .home-catalog-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 16px !important;
+  }
+  .home-search-form {
+    max-width: 100% !important;
+  }
+  
+  /* Detalhes do Livro */
+  .book-detail-grid {
+    padding: 16px !important;
+    gap: 20px !important;
+  }
+  .book-cover-container {
+    min-height: 280px !important;
+  }
+  .book-cover-container img,
+  .book-cover-container > div {
+    max-height: 280px !important;
+  }
+  .book-price-box {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 15px !important;
+  }
+  
+  /* Carrinho de Compras */
+  .cart-item-card {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
+  .cart-item-price {
+    text-align: left !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    border-top: 1px solid var(--border-color);
+    padding-top: 8px;
+    margin-top: 4px;
+  }
+}
+
+/* Responsividade Ultra-Compacta (Celulares muito pequenos, ex: Galaxy Fold dobrado) */
+@media (max-width: 480px) {
+  .container {
+    padding: 0 8px !important;
+  }
+  .nav-catalog-link {
+    display: none !important; /* Esconde link redundante do catálogo */
+  }
+  .nav-login-btn-text {
+    display: none !important; /* Esconde a palavra Login, mantendo só o ícone */
+  }
+  .nav-login-btn {
+    padding: 6px 10px !important;
+  }
+  .welcome-banner .cyber-btn-filled {
+    padding: 10px 16px !important;
+    font-size: 0.9rem !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .welcome-banner-title {
+    font-size: 1.5rem !important;
+  }
+}
+

@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - backend_data:/app
+      # Copia o dataset para dentro do container se necessário (já mapeamos o caminho absoluto no código, 
+      # mas para rodar dentro do container, precisamos que o CSV esteja disponível no contexto do container)
+      # No Dockerfile do backend, nós não copiamos o CSV explicitamente, apenas a pasta app.
+      # Vamos consertar isso mapeando o CSV da raiz do workspace para a pasta /app no container 
+      # para que o backend consiga lê-lo sem problemas no ambiente Docker!
+      - ./dataset_livros.csv:/app/dataset_livros.csv
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: always
+
+volumes:
+  backend_data:
