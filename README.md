@@ -1,28 +1,45 @@
 # 📚 Livraria Greena-Leitura & Sistema de Recomendação
 
-Este é o meu projeto de **Sistema de Recomendação de Livros** integrado a uma loja virtual (e-commerce) responsiva com design futurista e tecnológico, desenvolvido como atividade acadêmica (A3). 
+Este projeto consiste em um **Sistema de Recomendação de Livros** integrado a uma loja virtual (e-commerce) responsiva com design futurista e tecnológico, desenvolvido como atividade acadêmica (A3).
 
-Desenvolvi o sistema sob uma arquitetura moderna de duas camadas (Backend e Frontend), empacotado sob containers Docker e orquestrado via Docker Compose para facilitar a reprodução, teste e avaliação do projeto.
+A aplicação foi estruturada sob uma arquitetura moderna dividida em duas camadas (Backend e Frontend), empacotada em containers Docker e orquestrada via Docker Compose para facilitar a execução, reprodução e avaliação do sistema.
 
 ---
 
-## 🛠️ Tecnologias que Utilizei
+## 🛠️ Tecnologias Utilizadas
 
 ### **Backend**
-*   **Python 3.11** + **FastAPI**: Criação rápida de APIs com documentação Swagger automática.
-*   **SQLAlchemy** + **SQLite**: Banco de dados relacional leve para persistir contas de usuários, itens do carrinho de compras, interações (cliques/visualizações) e metadados de livros.
-*   **Scikit-Learn** + **Pandas** + **NumPy**: Análise de dados, vetorização TF-IDF e cálculo matemático de similaridade de cosseno.
-*   **Pytest**: Suite de testes automatizados para rotas de negócio e inteligência artificial.
-*   **JWT (JSON Web Tokens)**: Segurança na persistência e autenticação de usuários logados.
+*   **Python 3.11** + **FastAPI**: Desenvolvimento de rotas assíncronas de alta performance com documentação Swagger interativa gerada automaticamente.
+*   **SQLAlchemy** + **SQLite**: Banco de dados relacional leve para persistência de dados de usuários, itens do carrinho de compras, preferências de gêneros e histórico de interações (cliques).
+*   **Scikit-Learn** + **Pandas** + **NumPy**: Biblioteca para processamento dos metadados dos livros, vetorização e cálculo de similaridade vetorial.
+*   **Pytest**: Framework para a automação de testes unitários e de integração.
+*   **JWT (JSON Web Tokens)**: Padrão para autenticação segura e controle de sessões dos usuários.
 
 ### **Frontend**
-*   **React 19** + **TypeScript** + **Vite**: Construção de interface de usuário estritamente tipada, veloz e componentizada.
-*   **CSS Dinâmico (Variáveis customizadas)**: Design system customizado para modo Claro e Escuro (Futurista / Cyberpunk) sem dependências externas pesadas (como TailwindCSS), mantendo o código leve e com controle total.
-*   **Lucide React**: Ícones de alta qualidade para os elementos visuais.
+*   **React 19** + **TypeScript** + **Vite**: Framework moderno e tipado para a construção de uma Single Page Application (SPA) veloz e reativa.
+*   **CSS Dinâmico (Variáveis customizadas)**: Design system próprio sem a necessidade de bibliotecas externas pesadas, permitindo transições suaves e responsividade total.
+*   **Lucide React**: Biblioteca de ícones modernos integrados à interface.
 
 ---
 
-## 📐 Estrutura do Meu Repositório
+## 📦 Principais Recursos e Funcionalidades
+
+O sistema foi planejado e implementado com os seguintes recursos principais:
+
+1.  **Autenticação e Sessão Segura**: Fluxo de cadastro e login de usuários com senhas criptografadas via algoritmo bcrypt e persistência do estado da sessão utilizando tokens JWT no cabeçalho de requisições.
+2.  **Painel de Preferências de Leitura**: Tela que permite a calibração do recomendador através da seleção de gêneros literários favoritos do usuário.
+3.  **Carrinho de Compras Híbrido**: Itens adicionados ao carrinho antes do login são persistidos no `localStorage` do navegador e, após o login ou cadastro bem-sucedidos, são automaticamente migrados e sincronizados com a tabela do banco de dados SQLite.
+4.  **Catálogo Geral com Paginação e Busca**: Filtro de pesquisa de livros em tempo real por nome ou autor e filtragem de categorias por chips de gênero selecionáveis.
+5.  **Motor de Recomendação Híbrido**:
+    *   **Filtragem Baseada em Conteúdo (Content-Based Filtering)**: Processamento de texto contendo o nome do livro, o autor, os gêneros e a sinopse.
+    *   **Recomendações por Histórico de Cliques (Estilo Amazon)**: Rastreamento em tempo real das visualizações de cada livro. O sistema armazena cliques e gera dinamicamente seções intituladas *"Porque você viu [Livro]"*, sugerindo títulos matematicamente similares com base no vetor TF-IDF.
+    *   **Calibração por Gêneros**: Boost direto no score de similaridade para livros que coincidem com os interesses configurados nas preferências do usuário.
+6.  **Interface Responsiva com Tema Dual**: Alternância entre Modo Claro (estilo moderno e limpo) e Modo Escuro (visual tecnológico cyberpunk de alto contraste) adaptado para dispositivos móveis, tablets e monitores de alta resolução.
+7.  **Capas Dinâmicas**: Algoritmo no frontend que gera capas de livros estilizadas via CSS e gradientes dinâmicos quando a URL de imagem padrão fornecida pelo dataset é inválida ou inacessível.
+
+---
+
+## 📐 Estrutura do Repositório
 
 ```text
 provatrabalho3/
@@ -58,70 +75,50 @@ provatrabalho3/
 
 ---
 
-## 🤖 Como Desenvolvi o Motor de Recomendação (Lógica e Modelo)
+## 🤖 Detalhes do Algoritmo de Recomendação
 
-Para atender à proposta da atividade acadêmica de construir um sistema de recomendação real, adotei a técnica de **Filtragem Baseada em Conteúdo (Content-Based Filtering)** combinada com os **interesses em tempo real** do usuário, utilizando análise de texto sobre o arquivo `dataset_livros.csv` (contendo mais de 6.000 livros).
+O motor de recomendação adota representações textuais dos livros integradas a cálculos de distância matemática.
 
-### 1. Lógica de Processamento e Treinamento do Modelo
-*   Na inicialização do FastAPI, os livros do arquivo CSV são importados e persistidos no banco de dados SQLite (se ele estiver vazio).
-*   Para criar um perfil textual rico para cada livro, concateno as colunas textuais (`nome`, `autor`, `genero` e `descricao`).
-*   Para garantir que o autor, o nome do livro e o gênero pesem mais do que as palavras soltas da sinopse, apliquei uma técnica de **repetição de termos importantes** (multiplico o título e gênero por 3 vezes e o autor por 2 vezes no texto final de treinamento).
-*   Utilizo o `TfidfVectorizer` do `scikit-learn` para ajustar e transformar os textos compilados em vetores de pesos numéricos de termos (Matriz TF-IDF).
+### Lógica de Vetorização (Treinamento)
+1.  Os livros do arquivo `dataset_livros.csv` são carregados no banco de dados SQLite.
+2.  É formada uma string unificada combinando os metadados do livro. Para priorizar termos mais específicos de busca em relação ao texto descritivo geral, aplica-se uma repetição de termos: o nome do livro e seu gênero são multiplicados por 3 vezes e o autor por 2 vezes.
+3.  O `TfidfVectorizer` (configurado com remoção de *stop words* em português) calcula a frequência de cada termo em relação ao acervo, convertendo os livros em uma matriz esparsa de vetores numéricos.
 
-### 2. Recomendação Personalizada com Base no Perfil e Interesses (`/recommendations/{user_id}`)
-Quando o usuário está autenticado e o sistema exibe os livros recomendados, a minha lógica realiza o seguinte cálculo dinâmico:
-*   **Vetor do Carrinho**: Extraio os livros no carrinho do usuário. Se houver itens, calculo o vetor TF-IDF médio deles para representar o perfil de interesses de compra daquele leitor. Aplico a **similaridade de cosseno** entre esse perfil médio e o restante da base de dados.
-*   **Preferências de Gênero**: Se o usuário escolheu gêneros preferidos nas suas configurações de perfil, vetorizo esses gêneros e acrescento à pontuação, aplicando também um *boost* direto de `+0.2` na pontuação de similaridade para livros do mesmo gênero.
-*   **Filtragem de Repetição**: O motor penaliza e remove da lista livros que já estão no carrinho para evitar recomendações redundantes.
-*   **Fallback**: Se o usuário for novo e não tiver dados de carrinho ou gênero, o recomendador sugere uma seleção padrão de livros variados.
-
-### 3. Recomendações Baseadas em Cliques e Navegação - Estilo Amazon (`/recommendations/{user_id}/browsing-history`)
-Para enriquecer a experiência, adicionei um sistema de recomendação dinâmico baseado no histórico de cliques do leitor:
-*   **Rastreamento de Interações**: Sempre que o usuário clica para ver os detalhes de um livro específico (`BookDetail`), o sistema grava uma interação do tipo `view` no banco de dados.
-*   **Geração de Seções Dinâmicas**: O sistema analisa as últimas visualizações do usuário. Para cada um dos livros vistos recentemente, calculo a similaridade de cosseno individual contra toda a base de dados.
-*   **Renderização Separada**: A página inicial renderiza seções exclusivas com títulos dinâmicos como *"Porque você viu [Nome do Livro]"*, listando títulos extremamente parecidos com o livro clicado.
-*   **Controle de Repetição**: Apliquei uma restrição de conjunto (`set`) para que livros exibidos em uma seção de histórico não se repitam nas outras seções inferiores ou no carrinho.
+### Lógica de Similaridade de Cosseno (Cálculo)
+*   **Interesses do Carrinho**: Ao analisar os livros no carrinho do usuário, o motor calcula um vetor médio de interesse de compra. A similaridade de cosseno é calculada contra todos os outros livros disponíveis no banco.
+*   **Preferências do Perfil**: Se o usuário escolheu gêneros preferidos, esses termos são vetorizados e adicionam um peso de `+0.5` na pontuação de similaridade final, além de um *boost* direto de `+0.2` para correspondências exatas.
+*   **Histórico de Visualização**: Cada clique nos detalhes de um livro gera um registro de visualização. Para cada uma das últimas visualizações do usuário, o motor calcula a recomendação de cosseno individualizada daquele item fonte, retornando seções dinâmicas agrupadas por livro na página inicial.
+*   **Prevenção de Duplicidades**: Itens atualmente no carrinho ou que já foram visualizados/recomendados em seções anteriores são temporariamente penalizados com score `-1.0` para evitar repetições indesejadas.
 
 ---
 
-## 🎨 Minhas Decisões de Design (Interface Futurista)
-
-Busquei criar uma interface muito polida, limpa e envolvente. Minhas decisões de design focaram em:
-1.  **Glassmorphism**: Aplicação de fundos translúcidos com efeito de desfoque sutil (`backdrop-filter: blur()`) e bordas brilhantes finas, dando um ar tecnológico.
-2.  **Modo Escuro (Cyberpunk/Dark)**: Combina um tom azul escuro profundo (`#060913`) com detalhes vibrantes em **Verde Neon** (`#00ff9d`) com efeitos de brilho elétrico (`box-shadow`).
-3.  **Modo Claro**: Oferece um contraste limpo em tons branco-gelo com destaques em **Verde Esmeralda** profundo (`#059669`).
-4.  **Capas Dinâmicas de Fallback**: Caso o livro importado do dataset não possua uma imagem válida cadastrada, criei capas temáticas renderizadas 100% via CSS com grids digitais e o título formatado para manter a estética do site consistente.
-5.  **Carrinho Persistente e Unificado**: O carrinho funciona localmente (`localStorage`) para usuários visitantes e, no momento em que realizam login ou criam conta, os itens são migrados e persistidos no banco de dados automaticamente.
-
----
-
-## 🚀 Como Executar o Meu Projeto
+## 🚀 Como Executar a Aplicação
 
 ### **Método Recomendado (Docker Compose)**
 
 Requisitos: Ter o **Docker** e o **Docker Desktop** instalados e em execução.
 
-1.  Dê um duplo clique no arquivo `run.bat` (no Windows) ou execute `./run.sh` no terminal (em Linux/macOS).
-    *   *Ou execute o comando manualmente na raiz do projeto:*
+1.  Basta clicar duas vezes no script `run.bat` (no Windows) ou executar `./run.sh` no terminal (em Linux/macOS).
+    *   *Ou execute o comando manualmente na pasta raiz:*
         ```bash
         docker compose up --build
         ```
-2.  Aguarde a compilação. Na primeira inicialização, o banco SQLite importará o CSV dinamicamente (pode levar 10-15 segundos).
-3.  Acesse nos navegadores:
-    *   **Frontend (Loja de Livros)**: `http://localhost:3000`
-    *   **Backend (Swagger Docs)**: `http://localhost:8000/docs`
+2.  Aguarde a inicialização dos serviços. Na primeira execução, o banco SQLite de livros será populado automaticamente a partir do arquivo CSV.
+3.  Acesse pelos links:
+    *   **Frontend (Loja Virtual)**: `http://localhost:3000`
+    *   **Backend (Swagger API Docs)**: `http://localhost:8000/docs`
 
 ---
 
 ### **Método Manual (Sem Docker)**
 
-#### **Passo 1: Inicializando o Backend**
+#### **Passo 1: Backend**
 Requisitos: Python 3.10+
-1.  Entre na pasta `backend/`:
+1.  Navegue até a pasta `backend/`:
     ```bash
     cd backend
     ```
-2.  Crie e ative o ambiente virtual virtualenv:
+2.  Crie e ative um ambiente virtual:
     ```bash
     python -m venv venv
     # No Windows:
@@ -129,7 +126,7 @@ Requisitos: Python 3.10+
     # No Linux/macOS:
     source venv/bin/activate
     ```
-3.  Instale os pacotes requeridos:
+3.  Instale as dependências:
     ```bash
     pip install -r requirements.txt
     ```
@@ -137,35 +134,37 @@ Requisitos: Python 3.10+
     ```bash
     uvicorn app.main:app --reload
     ```
-    *A API backend estará rodando em `http://localhost:8000`*
+    *O Backend estará escutando na porta `8000` (http://localhost:8000)*
 
-#### **Passo 2: Inicializando o Frontend**
+#### **Passo 2: Frontend**
 Requisitos: Node.js 18+
-1.  Abra outro terminal na pasta `frontend/`:
+1.  Abra um novo terminal na pasta `frontend/`:
     ```bash
     cd frontend
     ```
-2.  Instale as dependências com NPM:
+2.  Instale os pacotes npm:
     ```bash
     npm install
     ```
-3.  Inicie o servidor local Vite:
+3.  Inicie o servidor de desenvolvimento:
     ```bash
     npm run dev
     ```
-    *A interface estará acessível no endereço exibido (geralmente `http://localhost:5173`)*
+    *O Frontend estará rodando por padrão em `http://localhost:5173`*
 
 ---
 
-## 🧪 Executando os Meus Testes Automatizados
+## 🧪 Executando os Testes Automatizados
 
-Escrevi testes unitários e de integração localizados na pasta `backend/tests/test_api.py`. Eles testam a autenticação de usuários, manipulação de itens no banco SQLite em memória e o comportamento matemático de retorno de similaridades do TF-IDF do recomendador.
+Foram desenvolvidos testes automatizados na pasta `backend/tests/` para validar a estabilidade dos endpoints da API, a autenticação JWT, a manipulação do carrinho de compras e o comportamento do recomendador TF-IDF.
 
 Para executá-los:
-1.  Ative o ambiente virtual do backend (`cd backend` e ative o `venv`).
-2.  Instale o pytest (`pip install pytest httpx`).
-3.  Execute o comando:
+1.  Com o ambiente virtual do backend ativado (`venv`), execute:
+    ```bash
+    pip install pytest httpx
+    ```
+2.  Rode os testes com o comando:
     ```bash
     pytest
     ```
-4.  A suite exibirá os testes aprovados de ponta a ponta com sucesso.
+3.  O resultado dos testes será exibido diretamente no console.
