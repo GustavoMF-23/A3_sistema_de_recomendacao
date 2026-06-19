@@ -1,4 +1,4 @@
-# 📚 Livraria Greena-Leitura & Sistema de Recomendação
+#  Livraria Greena-Leitura & Sistema de Recomendação
 
 Este projeto consiste em um **Sistema de Recomendação de Livros** integrado a uma loja virtual (e-commerce) responsiva com design futurista e tecnológico, desenvolvido como atividade acadêmica (A3).
 
@@ -6,7 +6,7 @@ A aplicação foi estruturada sob uma arquitetura moderna dividida em duas camad
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+##  Tecnologias Utilizadas
 
 ### **Backend**
 *   **Python 3.11** + **FastAPI**: Desenvolvimento de rotas assíncronas de alta performance com documentação Swagger interativa gerada automaticamente.
@@ -22,7 +22,7 @@ A aplicação foi estruturada sob uma arquitetura moderna dividida em duas camad
 
 ---
 
-## 📦 Principais Recursos e Funcionalidades
+##  Principais Recursos e Funcionalidades
 
 O sistema foi planejado e implementado com os seguintes recursos principais:
 
@@ -39,7 +39,7 @@ O sistema foi planejado e implementado com os seguintes recursos principais:
 
 ---
 
-## 📐 Estrutura do Repositório
+##  Estrutura do Repositório
 
 ```text
 provatrabalho3/
@@ -75,7 +75,7 @@ provatrabalho3/
 
 ---
 
-## 🤖 Detalhes do Algoritmo de Recomendação
+##  Detalhes do Algoritmo de Recomendação
 
 O motor de recomendação adota representações textuais dos livros integradas a cálculos de distância matemática.
 
@@ -92,7 +92,7 @@ O motor de recomendação adota representações textuais dos livros integradas 
 
 ---
 
-## 🚀 Como Executar a Aplicação
+##  Como Executar a Aplicação
 
 ### **Método Recomendado (Docker Compose)**
 
@@ -154,7 +154,7 @@ Requisitos: Node.js 18+
 
 ---
 
-## 🧪 Executando os Testes Automatizados
+##  Executando os Testes Automatizados
 
 Foram desenvolvidos testes automatizados na pasta `backend/tests/` para validar a estabilidade dos endpoints da API, a autenticação JWT, a manipulação do carrinho de compras e o comportamento do recomendador TF-IDF.
 
